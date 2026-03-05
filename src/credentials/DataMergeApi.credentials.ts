@@ -9,7 +9,7 @@ export class DataMergeApi implements ICredentialType {
 
 	displayName = 'DataMerge API';
 
-	documentationUrl = '';
+	documentationUrl = 'https://www.datamerge.ai/docs/llms.txt';
 
 	properties: INodeProperties[] = [
 		{

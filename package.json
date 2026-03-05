@@ -1,6 +1,6 @@
 {
   "name": "@datamerge/n8n-nodes-datamerge",
-  "version": "0.1.0",
+  "version": "1.1.0",
   "description": "n8n community node to integrate with DataMerge, mirroring the Zapier @zapier-datamerge app.",
   "license": "MIT",
   "keywords": [
@@ -16,7 +16,8 @@
   "scripts": {
     "build": "tsc -p tsconfig.json",
     "dev": "tsc -p tsconfig.json --watch",
-    "lint": "echo \"No lint configured\""
+    "lint": "echo \"No lint configured\"",
+    "test:api": "node test-api.mjs"
   },
   "dependencies": {
     "n8n-core": "^1.0.0",
