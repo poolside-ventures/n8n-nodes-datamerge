@@ -1,6 +1,6 @@
 {
   "name": "@datamerge/n8n-nodes-datamerge",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "description": "n8n community node to integrate with DataMerge, mirroring the Zapier @zapier-datamerge app.",
   "license": "MIT",
   "keywords": [
@@ -36,5 +36,3 @@
     ]
   }
 }
-
-

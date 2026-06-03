@@ -17,10 +17,8 @@ This package exposes a single `DataMerge` node aligned with the [DataMerge API](
 - **Get Contact Search Status** — `GET /v1/contact/search/{job_id}/status`
 - **Get Contact** — `GET /v1/contact/get?record_id=...` (free)
 
-**Lookalike & account**
+**Account**
 
-- **Start Lookalike** — `POST /v1/company/lookalike` (companiesFilters, size, list)
-- **Get Lookalike Status** — `GET /v1/company/lookalike/{job_id}/status`
 - **Get Credits Balance** — `GET /v1/credits/balance`
 
 ## Installation

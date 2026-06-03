@@ -14,7 +14,7 @@ export class DataMerge implements INodeType {
 		icon: 'fa:building',
 		group: ['transform'],
 		version: 2,
-		description: 'Enrich companies and contacts, search contacts, find lookalikes via the DataMerge API',
+		description: 'Enrich companies and contacts, search contacts via the DataMerge API',
 		defaults: {
 			name: 'DataMerge',
 		},
@@ -71,17 +71,6 @@ export class DataMerge implements INodeType {
 						name: 'Get Contact',
 						value: 'getContact',
 						description: 'Fetch a contact by record ID (free)',
-					},
-					{
-						name: 'Start Lookalike',
-						value: 'startLookalike',
-						description:
-							'Find similar companies from seed domains (async, returns job ID)',
-					},
-					{
-						name: 'Get Lookalike Status',
-						value: 'getLookalikeStatus',
-						description: 'Poll lookalike job status and get record IDs',
 					},
 					{
 						name: 'Get Credits Balance',
@@ -510,63 +499,6 @@ export class DataMerge implements INodeType {
 				},
 				required: true,
 			},
-
-			// Start Lookalike
-			{
-				displayName: 'Companies Filters (JSON)',
-				name: 'companies_filters',
-				type: 'json',
-				default: '{"lookalikeDomains": ["stripe.com"], "primaryLocations": {"includeCountries": ["us", "gb"]}, "companySizes": ["51-200", "201-500"], "revenues": ["10-50M", "50-100M"]}',
-				description:
-					'Filters: lookalikeDomains, primaryLocations (includeCountries/excludeCountries), companySizes, revenues, yearFounded (min/max)',
-				displayOptions: {
-					show: {
-						operation: ['startLookalike'],
-					},
-				},
-				required: true,
-			},
-			{
-				displayName: 'Size',
-				name: 'lookalike_size',
-				type: 'number',
-				typeOptions: { minValue: 1 },
-				default: 50,
-				description: 'Number of lookalike companies to return',
-				displayOptions: {
-					show: {
-						operation: ['startLookalike'],
-					},
-				},
-			},
-			{
-				displayName: 'List Slug',
-				name: 'lookalike_list',
-				type: 'string',
-				default: '',
-				description: 'Optional list slug to add results to',
-				displayOptions: {
-					show: {
-						operation: ['startLookalike'],
-					},
-				},
-			},
-
-			// Get Lookalike Status
-			{
-				displayName: 'Job ID',
-				name: 'lookalike_job_id',
-				type: 'string',
-				default: '',
-				placeholder: '88280621-23ff-4506-a157-8e1403d7aa73',
-				description: 'Job ID from Start Lookalike',
-				displayOptions: {
-					show: {
-						operation: ['getLookalikeStatus'],
-					},
-				},
-				required: true,
-			},
 		],
 	};
 
@@ -943,63 +875,6 @@ export class DataMerge implements INodeType {
 							...flattened,
 						} as IDataObject,
 					});
-				} else if (operation === 'startLookalike') {
-					const filtersStr = self.getNodeParameter(
-						'companies_filters',
-						i,
-					) as string;
-					let companiesFilters: IDataObject;
-					try {
-						companiesFilters = JSON.parse(filtersStr) as IDataObject;
-					} catch {
-						throw new NodeOperationError(
-							self.getNode(),
-							'Companies Filters must be valid JSON',
-							{ itemIndex: i },
-						);
-					}
-					const size = self.getNodeParameter(
-						'lookalike_size',
-						i,
-						50,
-					) as number;
-					const list = self.getNodeParameter(
-						'lookalike_list',
-						i,
-						'',
-					) as string;
-					const body: IDataObject = {
-						companiesFilters,
-						size,
-					};
-					if (list) body.list = list;
-
-					const responseData = await self.helpers.requestWithAuthentication.call(
-						self,
-						'dataMergeApi',
-						{
-							method: 'POST',
-							url: 'https://api.datamerge.ai/v1/company/lookalike',
-							body,
-							json: true,
-						},
-					);
-					returnData.push({ json: responseData as IDataObject });
-				} else if (operation === 'getLookalikeStatus') {
-					const jobId = self.getNodeParameter(
-						'lookalike_job_id',
-						i,
-					) as string;
-					const responseData = await self.helpers.requestWithAuthentication.call(
-						self,
-						'dataMergeApi',
-						{
-							method: 'GET',
-							url: `https://api.datamerge.ai/v1/company/lookalike/${jobId}/status`,
-							json: true,
-						},
-					);
-					returnData.push({ json: responseData as IDataObject });
 				} else if (operation === 'getCreditsBalance') {
 					const responseData = await self.helpers.requestWithAuthentication.call(
 						self,
